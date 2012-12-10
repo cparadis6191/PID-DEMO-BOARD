@@ -5,9 +5,11 @@
 #include <avr/interrupt.h>
 
 #include "feedback.h"
+#include "motor.h"
 
 
-volatile extern int TIMER_FLAG;
+// Global timer flag
+volatile extern int g_TIMER_FLAG;
 
 
 // Set up a timer to use for each iteration of the feedback loop

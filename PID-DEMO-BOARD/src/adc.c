@@ -1,12 +1,17 @@
 #include "adc.h"
 
 void adc_init(void) {
+	PORTC &= ~((1 << PC4) | (1 << PC3) | (1 << PC2) | (1 << PC1) | (1 << PC0));
+	DDRC &= ~((1 << PC4) | (1 << PC3) | (1 << PC2) | (1 << PC1) | (1 << PC0));
+	DIDR0 |= ((1 << ADC4D) | (1 << ADC3D) | (1 << ADC2D) | (1 << ADC1D) | (1 << ADC0D));
+	
 	// Turn on the ADC
 	ADCSRA = (1 << ADEN);
 	// P/I/D inputs on PC0/PC1/PC2
 	
-	// Use AVcc as a reference
+	// Use AVcc as a voltage
 	ADMUX = (1 << REFS0);
+	
 	
 	return;
 }	
@@ -23,13 +28,13 @@ double adc_get_actual_angle(void) {
 	ADCSRA |= (1 << ADSC);
 	
 	// Wait until the conversion is complete
-	while (ADCSRA & (1 << ADIF));
+	while (!(ADCSRA & (1 << ADIF)));
+	
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - (1/11*5V))/(1024 - 1/11*5V)) - 135
-	// angle = (270*(ADC - 92)/(1024 - 92)) - 135
-	return (270*(ADCL | (ADCH << 8)) - 92)/((double) 932) - 135;
+	// angle = (270*(ADC - 85)/939) - 135
+	return 270*((ADCL | (ADCH << 8)) - 95)/((double) 929) - 135;
 }
 
 
@@ -45,13 +50,12 @@ double adc_get_desired_angle(void) {
 	ADCSRA |= (1 << ADSC);
 	
 	// Wait until the conversion is complete
-	while (ADCSRA & (1 << ADIF));
+	while (!(ADCSRA & (1 << ADIF)));
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - (1/11*5V))/(1024 - 1/11*5V)) - 135
-	// angle = (270*(ADC - 92)/(1024 - 92)) - 135
-	return (270*(ADCL | (ADCH << 8)) - 92)/(double) 932 - 135;
+	// angle = (270*(ADC - 85)/939) - 135
+	return 270*((ADCL | (ADCH << 8)) - 85)/((double) 939) - 135;
 }
 
 
@@ -69,13 +73,12 @@ double adc_get_p(void) {
 	ADCSRA |= (1 << ADSC);
 	
 	// Wait until the conversion is complete
-	while (ADCSRA & (1 << ADIF));
+	while (!(ADCSRA & (1 << ADIF)));
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - (1/11*5V))/(1024 - 1/11*5V)) - 135
-	// angle = (270*(ADC - 92)/(1024 - 92)) - 135
-	return (10*(ADCL | (ADCH << 8)) - 92)/((double) 932);
+	// Kp = ((10*ADC - 85)/939)
+	return 10*((ADCL | (ADCH << 8)) - 85)/((double) 939);
 }	
 	
 	
@@ -93,13 +96,12 @@ double adc_get_i(void) {
 	ADCSRA |= (1 << ADSC);
 	
 	// Wait until the conversion is complete
-	while (ADCSRA & (1 << ADIF));
+	while (!(ADCSRA & (1 << ADIF)));
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - (1/11*5V))/(1024 - 1/11*5V)) - 135
-	// angle = (270*(ADC - 92)/(1024 - 92)) - 135
-	return (1*(ADCL | (ADCH << 8)) - 92)/((double) 932);
+	// Ki = ((10*ADC - 90)/934)
+	return 2*((ADCL | (ADCH << 8)) - 90)/((double) 934);
 }	
 	
 
@@ -117,11 +119,10 @@ double adc_get_d(void) {
 	ADCSRA |= (1 << ADSC);
 	
 	// Wait until the conversion is complete
-	while (ADCSRA & (1 << ADIF));
+	while (!(ADCSRA & (1 << ADIF)));
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - (1/11*5V))/(1024 - 1/11*5V)) - 135
-	// angle = (270*(ADC - 92)/(1024 - 92)) - 135
-	return (2*(ADCL | (ADCH << 8)) - 92)/((double) 932);
+	// Ki = ((10*ADC - 95)/929)
+	return 2*((ADCL | (ADCH << 8)) - 95)/((double) 929);
 }	

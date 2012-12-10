@@ -1,23 +1,28 @@
 #include "PID-DEMO-BOARD.h"
 
 
-volatile int TIMER_FLAG;
+volatile int g_TIMER_FLAG;
 
 int main(void) {
 	
-	pwm_init();
+	pwm_init_A();
+	pwm_init_B();
+	motor_init();
 	adc_init();
 	timer_init();
 	
 	sei();
 	
+	DDRD |= (1 << PD0);
+	
 	double p_error = 0;
 	
 	while (1) {
-		// Adjust the output every timer cycle
-		if (TIMER_FLAG) {
+		// Adjust the output every timer cycle (10ms)
+		if (g_TIMER_FLAG) {
+			PORTD ^= (1 << PD0);
 			// Clear the timer flag
-			TIMER_FLAG = 0;
+			g_TIMER_FLAG = 0;
 			
 			p_error = feedback_loop(p_error);
 		}
@@ -28,30 +33,29 @@ int main(void) {
 
 
 void timer_init(void) {
-	// 8-bit timer running in CTC mode
+	// 16-bit timer running in CTC mode
 	// 0CRA is the top
-	TCCR0A = (1 << WGM01);
-	
 	// Use the system clock prescaled by 1024
-	TCCR0B = ((1 << CS02) | (1 << CS00));
+	TCCR1B = ((1 << WGM12) | (1 << CS12) | (1 << CS10));
 	
-	// Set up timer 0 to generate interrupts on match with OCR0A
-	TIMSK0 = (1 << OCIE0A);
+	// Set up timer 1 to generate interrupts on match with OCR0A
+	TIMSK1 = (1 << OCIE1A);
 	
-	// Generate interrupts at 100Hz (roughly every 10ms) 
+	// Generate interrupts at 100Hz (roughly every 10ms)
 	// top = 8MHz/(10ms*1024) - 1
-	OCR0A = 77;
+	OCR1A = 77;
 	
 	// Clear the counter
-	TCNT0 = 0;
+	TCNT1 = 0;
 	
 	
 	return;
 }
 
-ISR(TIMER0_COMPA_vect) {
+ISR(TIMER1_COMPA_vect) {
 	// Set the flag
-	TIMER_FLAG = 1;
+	g_TIMER_FLAG = 1;
+	
 	
 	return;
-}	
+}

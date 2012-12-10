@@ -4,8 +4,9 @@
 #include <avr/io.h>
 
 
-void pwm_init(void);
+void pwm_init_A(void);
+void pwm_init_B(void);
 
-void pwm_adjust(uint8_t top);
+void pwm_adjust(double controller_output);
 
 #endif
