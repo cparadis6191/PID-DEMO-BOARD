@@ -7,9 +7,6 @@
 #include "pwm.h"
 
 
-double feedback_loop(double p_error_previous);
-
-// Returns a value for TOP for the PWM signal
-uint8_t pwm_feedback_output_convert(double feedback_output);
+double * feedback_loop(double * error_previous);
 
 #endif	

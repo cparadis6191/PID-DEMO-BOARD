@@ -15,7 +15,9 @@ int main(void) {
 	
 	DDRD |= (1 << PD0);
 	
-	double p_error = 0;
+	double * error_previous = malloc(sizeof(double)*2);
+	error_previous[0] = 0;
+	error_previous[1] = 0;
 	
 	while (1) {
 		// Adjust the output every timer cycle (10ms)
@@ -24,7 +26,7 @@ int main(void) {
 			// Clear the timer flag
 			g_TIMER_FLAG = 0;
 			
-			p_error = feedback_loop(p_error);
+			error_previous = feedback_loop(error_previous);
 		}
 	}
 	
@@ -55,6 +57,14 @@ void timer_init(void) {
 ISR(TIMER1_COMPA_vect) {
 	// Set the flag
 	g_TIMER_FLAG = 1;
+	
+	
+	return;
+}
+
+
+ISR(WDT_vect) {
+	// Ignore the watchdog timer
 	
 	
 	return;

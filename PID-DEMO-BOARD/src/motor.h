@@ -10,8 +10,6 @@
 
 
 void motor_init(void);
-void motor_rotate_ccw(void);
-void motor_brake_cw(void);
 
 
 #endif

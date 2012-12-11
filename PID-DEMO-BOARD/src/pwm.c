@@ -1,9 +1,9 @@
 #include "pwm.h"
 
 void pwm_init_A(void) {
-	// Toggle OC0A on CNT match with OCR0A
+	// Clear OC0A on CNT match with OCR0A
 	// Non-inverting mode
-	TCCR0A = ((1 << COM0A1) | (1 << WGM00));
+	TCCR0A = ((1 << COM0A1) | (0 << COM0A0) | (1 << WGM00));
 	
 	// Set the clock prescaler to 1024
 	TCCR0B = ((1 << CS00) | (0 << WGM02));
@@ -22,9 +22,9 @@ void pwm_init_A(void) {
 
 
 void pwm_init_B(void) {
-	// Toggle OC2A on CNT match with OCR1A
+	// Clear OC2A on CNT match with OCR1A
 	// Non-inverting mode
-	TCCR2A = ((1 << COM2A1) | (1 << WGM20));
+	TCCR2A = ((1 << COM2A1) | (0 << COM2A0) | (1 << WGM20));
 	
 	// Phase and frequency correct PWM
 	TCCR2B = (1 << CS20) | (0 << WGM22);
@@ -46,24 +46,30 @@ void pwm_adjust(double controller_output) {
 	// Set top value
 	if (controller_output < 0) {
 		// Disable PWM channel B
-		DDRB &= ~(1 << PB3);
+		DDRB |= (1 << PB3);
 		// Enable PWM channel A
 		DDRD |= (1 << PD6);
 		
-		OCR0A = (((int) controller_output) >> 2);
+		// Make sure the output PWM saturate properly
+		OCR0A = ((((int) -controller_output) >> 2) > 0xFF)?0xFF:(((int) -controller_output) >> 2);
+		OCR2A = 0;
 		
-	} else if (controller_output >= 0) {
+	} else if (controller_output > 0) {
 		// Disable PWM channel A
-		DDRD &= ~(1 << PD6);
+		DDRD |= (1 << PD6);
 		// Enable PWM channel B
 		DDRB |= (1 << PB3);
 		
-		OCR2A = (((int) controller_output) >> 2);
+		OCR2A = ((((int) controller_output) >> 2) > 0xFF)?0xFF:(((int) controller_output) >> 2);
+		OCR0A = 0;
+		
 	} else {
 		// Disable all PWM if controller output is 0
-		DDRD &= ~(1 << PD6);
-		DDRB &= ~(1 << PB3);
+		DDRD |= (1 << PD6);
+		DDRB |= (1 << PB3);
 		
+		OCR0A = 0;
+		OCR2A = 0;
 	}		
 		
 	return;
