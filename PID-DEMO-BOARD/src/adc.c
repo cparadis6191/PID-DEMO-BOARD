@@ -33,8 +33,8 @@ double adc_get_actual_angle(void) {
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - 85)/939) - 135
-	return 270*(((ADCL | (ADCH << 8)) - 95)/((double) 929));
+	// angle = (270*(ADC)/1024) - 135
+	return 270*((ADCL | (ADCH << 8))/((double) 1024));
 }
 
 
@@ -54,8 +54,8 @@ double adc_get_desired_angle(void) {
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// angle = (270*(ADC - 85)/939) - 135
-	return 270*(((ADCL | (ADCH << 8)) - 80)/((double) 944));
+	// angle = (270*(ADC)/1024) - 135
+	return 270*((ADCL | (ADCH << 8))/((double) 1024));
 }
 
 
@@ -77,8 +77,8 @@ double adc_get_p(void) {
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// Kp = ((10*ADC - 85)/939)
-	return Kp_max*(((ADCL | (ADCH << 8)) - 85)/((double) 939));
+	// Kp = ((10*ADC)/1024)
+	return Kp_max*((ADCL | (ADCH << 8))/((double) 1024));
 }	
 	
 	
@@ -100,8 +100,8 @@ double adc_get_i(void) {
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// Ki = ((10*ADC - 90)/934)
-	return Ki_max*(((ADCL | (ADCH << 8)) - 90)/((double) 934));
+	// Ki = ((10*ADC)/1024)
+	return Ki_max*((ADCL | (ADCH << 8))/((double) 1024));
 }	
 	
 
@@ -123,6 +123,6 @@ double adc_get_d(void) {
 	
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
-	// Ki = ((10*ADC - 95)/929)
-	return Kd_max*(((ADCL | (ADCH << 8)) - 95)/((double) 929));
+	// Ki = ((10*ADC)/1024)
+	return Kd_max*((ADCL | (ADCH << 8))/((double) 1024));
 }	
