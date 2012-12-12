@@ -24,6 +24,8 @@ double * feedback_loop(double * error_previous) {
 	error_previous[1] += p_error*delta_t;
 	// Compute the derivative
 	d_error = (p_error - error_previous[0])/delta_t;
+	// Store the current error into the previous error term
+	error_previous[0] = p_error;
 	
 	controller_output = (Kp*p_error + Ki*error_previous[1] + Kd*d_error);
 	
