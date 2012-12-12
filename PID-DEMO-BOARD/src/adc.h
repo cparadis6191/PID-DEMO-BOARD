@@ -4,6 +4,8 @@
 #include <avr/io.h>
 #include <stdint.h>
 
+#include "feedback.h"
+
 // Initialize the ADC
 void adc_init(void);
 

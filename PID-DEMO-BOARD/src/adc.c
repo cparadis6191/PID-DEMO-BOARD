@@ -78,7 +78,7 @@ double adc_get_p(void) {
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
 	// Kp = ((10*ADC - 85)/939)
-	return 10*(((ADCL | (ADCH << 8)) - 85)/((double) 939));
+	return Kp_max*(((ADCL | (ADCH << 8)) - 85)/((double) 939));
 }	
 	
 	
@@ -101,7 +101,7 @@ double adc_get_i(void) {
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
 	// Ki = ((10*ADC - 90)/934)
-	return 25*(((ADCL | (ADCH << 8)) - 90)/((double) 934));
+	return Ki_max*(((ADCL | (ADCH << 8)) - 90)/((double) 934));
 }	
 	
 
@@ -124,5 +124,5 @@ double adc_get_d(void) {
 	// Return the converted value
 	// 10k potentiometer with a 1k resistor in series
 	// Ki = ((10*ADC - 95)/929)
-	return 2*(((ADCL | (ADCH << 8)) - 95)/((double) 929));
+	return Kd_max*(((ADCL | (ADCH << 8)) - 95)/((double) 929));
 }	

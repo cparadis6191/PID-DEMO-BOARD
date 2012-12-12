@@ -44,22 +44,23 @@ void pwm_init_B(void) {
 
 void pwm_adjust(double controller_output) {
 	// Set top value
-	if (controller_output < 0) {
+	if (controller_output < -2) {
 		// Disable PWM channel B
 		DDRB |= (1 << PB3);
 		// Enable PWM channel A
 		DDRD |= (1 << PD6);
 		
-		// Make sure the output PWM saturate properly
+		// Make sure the output PWM saturates properly
 		OCR0A = ((((int) -controller_output) >> 2) > 0xFF)?0xFF:(((int) -controller_output) >> 2);
 		OCR2A = 0;
 		
-	} else if (controller_output > 0) {
+	} else if (controller_output > 2) {
 		// Disable PWM channel A
 		DDRD |= (1 << PD6);
 		// Enable PWM channel B
 		DDRB |= (1 << PB3);
 		
+		// Make sure the output PWM saturates properly
 		OCR2A = ((((int) controller_output) >> 2) > 0xFF)?0xFF:(((int) controller_output) >> 2);
 		OCR0A = 0;
 		
@@ -71,6 +72,7 @@ void pwm_adjust(double controller_output) {
 		OCR0A = 0;
 		OCR2A = 0;
 	}		
+		
 		
 	return;
 }

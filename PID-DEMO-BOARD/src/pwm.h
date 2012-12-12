@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 
-
 void pwm_init_A(void);
 void pwm_init_B(void);
 
