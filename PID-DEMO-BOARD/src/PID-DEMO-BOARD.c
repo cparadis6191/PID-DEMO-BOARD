@@ -41,7 +41,7 @@ void timer_init(void) {
 	TIMSK1 = (1 << OCIE1A);
 	
 	// Generate interrupts at 100Hz (roughly every 10ms)
-	// top = 8MHz/(10ms*1024) - 1
+	// top = (10ms*8MHz)/1024 - 1
 	OCR1A = 77;
 	
 	// Clear the counter
