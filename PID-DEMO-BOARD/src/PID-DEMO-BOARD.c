@@ -13,7 +13,7 @@ int main(void) {
 	
 	sei();
 	
-	double * error_previous = malloc(sizeof(double)*2);
+	double error_previous[2];
 	error_previous[0] = 0;
 	error_previous[1] = 0;
 	
@@ -23,7 +23,7 @@ int main(void) {
 			// Clear the timer flag
 			g_TIMER_FLAG = 0;
 			
-			error_previous = feedback_loop(error_previous);
+			error_previous = feedback_loop(&error_previous);
 		}
 	}
 	
